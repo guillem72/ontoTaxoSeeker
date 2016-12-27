@@ -23,9 +23,7 @@
  */
 package glluch.com.ontotaxoseeker;
 
-import com.glluch.findterms.FindTerms;
 import com.glluch.findterms.TermsCount;
-import com.glluch.findterms.Vocabulary;
 import com.glluch.utils.Out;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,8 +57,13 @@ public class TaxoPath {
         return this.findPaths(nouns);
     }
      
-     
-      protected TermsCount nouns(String doc) throws IOException{
+    /**
+     * Given a text search for nouns and return it
+     * @param doc The text source.
+     * @return A list of nouns in doc and their counts.
+     * @throws IOException Reading a file in freeling.
+     */
+    protected TermsCount nouns(String doc) throws IOException{
         //debug("TaxoPaths nouns:");
         TermsCount nouns;
         Terms terms = FreelingTagger.nouns(doc);
@@ -72,7 +75,15 @@ public class TaxoPath {
         return nouns;
     }
      
-       public PathsCount findPaths(TermsCount terms) throws IOException {
+    /**
+     * Given a list of terms (with counts) builds a list of path, with counts. So, 
+     * transforms each term into null if it isn't in the taxonomy or in its path if 
+     * it is in.
+     * @param terms The list of terms and its counts.
+     * @return A list of paths from the taxonomy and its counts.
+     * @throws IOException Reading a file in freeling.
+     */
+    public PathsCount findPaths(TermsCount terms) throws IOException {
         PathsCount termsPaths = new PathsCount();
         Iterator termsIte=terms.iterator();
         //debug("PathsCount findPaths");
@@ -95,23 +106,19 @@ public class TaxoPath {
 
     }
      
-   
-    
-   
-    
-    
-    protected PathsCount findTerms(TermsCount nouns) throws IOException {
-               
-        if (nouns.isEmpty()){return null;}
-        PathsCount termsPaths = this.findPaths(nouns);
-        return termsPaths;
-
-    }
-  
+    /**
+     * Print in console the paths in friendly way.
+     * @param termsPaths The list of term and its counts.
+     */
     public void showPaths(PathsCount termsPaths) {
         Out.p(this.prettyPrintPaths(termsPaths));
     }
     
+    /**
+     * Creates a String ready for print.
+     * @param termsPaths The list of term and its counts.
+     * @return An String with a line per path and its ocurrences.
+     */
     public String prettyPrintPaths(PathsCount termsPaths) {
         //debug("prettyPrintPaths");
         String s="";
@@ -123,8 +130,14 @@ public class TaxoPath {
         return s;
     }
 
-  
-
+    /**
+     * Given a candite URI, search in the taxonomy and return its path, if the uri 
+     * corresponds a term in the ontology or null otherwise.
+     * @param termUri The candidate URI, for example http://glluch.com/ieee_taxonomy#routing . 
+     * @return The path of the uri o null if the uri is missing. 
+     * For example, /communications_technology/communication_systems/routing
+     * @throws IOException Reading files.
+     */
     public Path path(String termUri) throws IOException {
 
         Path p = new Path();
@@ -153,6 +166,12 @@ public class TaxoPath {
         return p;
     }
 
+    /**
+     * Given a URI returns its immediate parent if exisists, null otherwise.
+     * @param termUri The URI for which the parent will be searched.
+     * @return An Apache Jena statement which corresponds to the parent. 
+     * @throws IOException Reading the ontology file.
+     */
     public Statement up(String termUri) throws IOException {
         //debug("TaxoPath.up, Searching for "+termUri);
         boolean found = false;

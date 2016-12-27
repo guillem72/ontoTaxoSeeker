@@ -28,7 +28,6 @@ import edu.upc.freeling.*;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.Individual;
-import org.apache.jena.ontology.OntModel;
 
 /**
  * A class for store word, lemma and its related information.
@@ -54,7 +53,7 @@ public class Term {
     /**
      * Test if the term is present in the IEEE computers taxonomy
      * @return true if the term is there, false otherwise.
-     * @throws IOException
+     * @throws IOException Reading file.
      */
     public boolean isEEEterm() throws IOException {
         if (!this.isIEEETerm) {

@@ -27,7 +27,6 @@ package glluch.com.ontotaxoseeker;
 import com.glluch.utils.Out;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
