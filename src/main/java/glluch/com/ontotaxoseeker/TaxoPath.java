@@ -24,14 +24,14 @@
 package glluch.com.ontotaxoseeker;
 
 import com.glluch.findterms.FindTerms;
+import com.glluch.findterms.TermsCount;
 import com.glluch.findterms.Vocabulary;
 import com.glluch.utils.Out;
-import static glluch.com.ontotaxoseeker.Main.WIDER;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 
-import org.apache.jena.ontology.OntModel;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -39,62 +39,99 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 
 /**
- *
+ * Do several actions on Path related to IEEE computers ontology.
  * @author Guillem LLuch Moll
  */
 public class TaxoPath {
 
-    protected OntModel model;
     
+    protected ArrayList <String> noIEEEnouns= new ArrayList <>();
     
-    
-
-    public ArrayList<Path> findTerms(String doc) {
-        ArrayList<String> res;
-        //Vocabulary.filename = "resources/Terms.owl"; //optional
-        FindTerms finder = new FindTerms();
-        FindTerms.vocabulary = Vocabulary.get();
-        //System.out.println(Vocabulary.listTerms());
-
-        res = finder.found(doc);
-        
-        if (res.isEmpty()){return null;}
-        ArrayList<Path> termsPaths = this.findPaths(res);
+    /**
+     * Search for all the paths in a txt document.
+     * @param doc The txt to be processed
+     * @return A list of paths and its ocurrences-
+     * @throws IOException Reading files.
+     */
+    public  PathsCount findPaths(String doc) throws IOException{
+       
+         TermsCount nouns=this.nouns(doc);
+        return this.findPaths(nouns);
+    }
+     
+     
+      protected TermsCount nouns(String doc) throws IOException{
+        //debug("TaxoPaths nouns:");
+        TermsCount nouns;
+        Terms terms = FreelingTagger.nouns(doc);
+        //debug("terms");
+        //debug(terms.pretyPrint());
+        nouns = terms.toTermsCount();
+        //debug("nouns");
+        //debug(nouns.pretyPrint());
+        return nouns;
+    }
+     
+       public PathsCount findPaths(TermsCount terms) throws IOException {
+        PathsCount termsPaths = new PathsCount();
+        Iterator termsIte=terms.iterator();
+        //debug("PathsCount findPaths");
+        while (termsIte.hasNext())
+        {
+            String key=(String) termsIte.next();
+            String termUri=StringUtils.replace(key, " ", "_");
+            termUri=Config.NS+termUri;
+            Path termPath=this.path(termUri);
+            //debug("termUri is "+termUri);
+            if (termPath!=null){
+            termsPaths.put(termPath,terms.get(key));
+            //debug("\ttermPath is "+termPath.prettyPrint());
+            }
+            else {
+                //debug("\tthere isn't in IEEE taxonomy");
+            }
+        }
         return termsPaths;
 
     }
+     
+   
+    
+   
+    
+    
+    protected PathsCount findTerms(TermsCount nouns) throws IOException {
+               
+        if (nouns.isEmpty()){return null;}
+        PathsCount termsPaths = this.findPaths(nouns);
+        return termsPaths;
 
-    public void showPaths(ArrayList<Path> termsPaths) {
-        for (Path p : termsPaths) {
-            Out.p(p.prettyPrint());
-        }
+    }
+  
+    public void showPaths(PathsCount termsPaths) {
+        Out.p(this.prettyPrintPaths(termsPaths));
     }
     
-    public String prettyPrintPaths(ArrayList<Path> termsPaths) {
+    public String prettyPrintPaths(PathsCount termsPaths) {
+        //debug("prettyPrintPaths");
         String s="";
-        for (Path p : termsPaths) {
-            s+=p.prettyPrint()+"\n";
+        Iterator ite=termsPaths.iterator();
+        while (ite.hasNext()){
+           Path p=(Path) ite.next();
+            s+=p.prettyPrint()+" -> "+termsPaths.get(p)+System.lineSeparator();
         }
         return s;
     }
 
-    public ArrayList<Path> findPaths(ArrayList<String> terms) {
-        ArrayList<Path> termsPaths = new ArrayList<>();
-        for (String term : terms) {
-            String termUri=StringUtils.replace(term, " ", "_");
-            termUri=Config.NS+termUri;
-            termsPaths.add(this.path(termUri));
-        }
-        return termsPaths;
+  
 
-    }
-
-    public Path path(String termUri) {
+    public Path path(String termUri) throws IOException {
 
         Path p = new Path();
-        if (termUri != "") {
+        if (!termUri.equals("")) {
             Resource lastObject;
             Statement lastS = this.up(termUri);
+            if (lastS==null) return null;
             lastObject = (Resource) lastS.getObject();
             //debug(termUri);
             //debug("Subject:" + lastS.getSubject().getURI());
@@ -116,11 +153,12 @@ public class TaxoPath {
         return p;
     }
 
-    public Statement up(String termUri) {
+    public Statement up(String termUri) throws IOException {
         //debug("TaxoPath.up, Searching for "+termUri);
         boolean found = false;
         Statement up = null;
-        Resource r = model.getResource(termUri);
+        Resource r = Config.getModel().getResource(termUri);
+        if (r!=null){
         StmtIterator statements = r.listProperties();
         while (!found && statements.hasNext()) {
             Statement next = statements.next();
@@ -132,16 +170,28 @@ public class TaxoPath {
 
             }
         }
+        }
         return up;
     }
 
-    public OntModel getModel() {
-        return model;
-    }
+      
+    /*
+    public PathsCount findTerms2(String doc) throws IOException {
+        TermsCount res;
+        //Vocabulary.filename = "resources/Terms.owl"; //optional
+        FindTerms finder = new FindTerms();
+        FindTerms.vocabulary = Vocabulary.get();
+        //System.out.println(Vocabulary.listTerms());
 
-    public void setModel(OntModel model) {
-        this.model = model;
+        res = finder.foundAndCount(doc);
+        
+        if (res.isEmpty()){return null;}
+        PathsCount termsPaths = this.findPaths(res);
+        return termsPaths;
+
     }
+    */
+   
 
   
 

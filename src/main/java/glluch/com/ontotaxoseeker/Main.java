@@ -50,8 +50,8 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         //String filename="resources/ieee_onto2_reasoning.rdf"; ieee_onto2_reasoning.owl
         //String filename="resources/ieee_onto2_reasoning.rdf";
-        String filename="resources/ieee_taxo_v2_rdf.owl";
-        OntModel ieee=model(filename);
+        //String filename="resources/ieee_taxo_v2_rdf.owl";
+        //OntModel ieee=model(filename);
         //Out.p(ieee.getBaseModel());
         //exploreIndividuals (ieee);
         //exploreClass(ieee);
@@ -60,8 +60,8 @@ public class Main {
         //routing
         
        
-        String term="routing";
-        String termUri=NS+term;
+        //String term="routing";
+        //String termUri=NS+term;
         //explorePath(ieee,termUri);
          //p.path(termUri);
         //String doc="Linux Evolution and Popular Operating Systems and cognitive radio";
@@ -73,26 +73,23 @@ public class Main {
             + "options for development such as reusing, improving or "
             + "reconfiguration of existing components. Optimises efficiency, "
             + "cost and quality. Validates results with user representatives, "
-            + "integrates and commissions the overall solution.";
-         findPaths(doc,ieee);
+            + "integrates and commissions the overall solution.Debugging";
+         findPaths(doc);
         
     }
     
-    public static String findPaths(String doc) throws IOException{
-        String filename="resources/ieee_taxo_v2_rdf.owl";
-        OntModel ieee=model(filename);
+      public static void findPaths(String doc) throws IOException{
+         Config.getModel();
         TaxoPath p=new TaxoPath();
-        p.setModel(ieee);
-        ArrayList<Path> paths = p.findTerms(doc);
-       return  p.prettyPrintPaths(paths);
-    }
-    
-    public static void findPaths(String doc, OntModel ieee){
-        TaxoPath p=new TaxoPath();
-        p.setModel(ieee);
-        ArrayList<Path> paths = p.findTerms(doc);
+        
+         PathsCount paths = p.findPaths(doc);
         p.showPaths(paths);
     }
+    
+    
+  
+    
+  
     
     protected static OntModel model(String filename) throws IOException{
         IO io=new IO();

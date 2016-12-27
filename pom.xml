@@ -33,6 +33,11 @@
             <artifactId>findTerms</artifactId>
             <version>28032016</version>
         </dependency>
+        <dependency>
+            <groupId>edu.upc</groupId>
+            <artifactId>freeling</artifactId>
+            <version>4.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

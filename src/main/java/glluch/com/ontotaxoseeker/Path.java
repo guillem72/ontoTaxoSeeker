@@ -30,13 +30,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Statement;
 
 /**
- *
+ * A wrapper for <a href="https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/ontology/class-use/OntTools.Path.html">
+ * org.apache.jena.ontology.OntTools.Path</a>.
  * @author Guillem LLuch Moll
  */
 public class Path extends org.apache.jena.ontology.OntTools.Path {
 
-    
-
+    /**
+     * Creates a friendly representation of the path.
+     * @return An string showing the path like a unix file path. For example,
+     * /electronic_design_automation_and_methodology/design_methodology/prototypes
+     */
     public String prettyPrint() {
         String sp = "";
         ArrayList<String> nodes = new ArrayList<>();

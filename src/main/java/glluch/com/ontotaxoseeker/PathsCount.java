@@ -23,57 +23,54 @@
  */
 
 package glluch.com.ontotaxoseeker;
+import com.glluch.findterms.TermsCount;
 import com.glluch.utils.Out;
-import java.io.IOException;
-import java.io.InputStream;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.util.FileManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
- * A class for some inputs and outputs.
+ * A wrapper for Map path -&lt; int. 
  * @author Guillem LLuch Moll
  */
-public class IO {
+public class PathsCount extends HashMap<Path,Integer>{
 
-    protected String filename=null;
+    /**
+     * This method transform this object to a TermsCount.
+     * @return pretty print presentation of the path (as string) -&lt; counts
+     */
+    public TermsCount conceptsCount(){
+         Iterator ite=this.iterator();
+         TermsCount cc=new TermsCount();
+         while (ite.hasNext()){
+             Path p=(Path) ite.next();
+             cc.put(p.prettyPrint(), this.get(p));
+         }
+         return cc;
+     }
     
     /**
-     * Builds a the OntModel for <a href="https://jena.apache.org/">apache jena</a>
-     * @return The OntModel form the filename.
-     * @throws IOException Reading files
+     * Method for obtain the keys of this object.
+     * @return an arrayList containing only the keys.
      */
-    public OntModel read() throws IOException{
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
-        if (StringUtils.isNotEmpty(filename)){
-            
-            InputStream in = FileManager.get().open(this.filename);
-        if (in == null) {
-            throw new IllegalArgumentException(
-                    "File: " + this.filename + " not found");
+    public ArrayList <Path> keys(){
+        ArrayList<Path> res=new ArrayList<>();
+        Set keyset=this.keySet();
+        for (Object key0:keyset){
+            res.add((Path)key0);
         }
-            
-            
-            m.read(in, null);
-        }
-        return m;
+        
+        return res;
+        
+   }
+    
+    
+    
+    public Iterator iterator(){
+    ArrayList <Path> keys=this.keys();
+    return keys.iterator();
     }
-    
-    
-    
-    
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-    
-    
     
     
     

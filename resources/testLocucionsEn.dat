@@ -1,0 +1,8 @@
+<TagSetFile>
+/usr/local/share/freeling/en/tagset.dat
+</TagSetFile>
+<Multiwords>
+key_performance_<indicator> key_performance_indicator NP I
+intellectual_property_<right> intellectual_property_right NP I
+operating_<system> operating_systems NP I
+</Multiwords>

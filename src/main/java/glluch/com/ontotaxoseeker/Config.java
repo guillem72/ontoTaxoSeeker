@@ -24,15 +24,51 @@
 
 package glluch.com.ontotaxoseeker;
 
+
+import java.io.IOException;
+import org.apache.jena.ontology.OntModel;
+
 /**
- *
+ * Some configuration common to all classes.
  * @author Guillem LLuch Moll
  */
 public class Config {
+
+    
     public static final String ROOT = "http://glluch.com/ieee_taxonomy#ieee";
+
+  
     public static final String WIDER="http://glluch.com/ieee_taxonomy#wide";
     public static final String NS="http://glluch.com/ieee_taxonomy#";   
     public static final boolean DEGUB=true;    
-    public static final boolean VERBOSE=true;    
+    public static final boolean VERBOSE=true;  
+    protected static OntModel model;
+
+    /**
+     * Get the OntModel if it is set and build it otherwise.
+     * @return the model from ieee_taxo_v2_rdf.owl o form a taxonomy similar to it.
+     * @throws IOException Reading files.
+     */
+    public static OntModel getModel() throws IOException {
+        if (Config.model!=null)
+        return model;
+        else 
+        {
+              String filename="resources/ieee_taxo_v2_rdf.owl";
+               IO io=new IO();
+            io.setFilename(filename);
+             model = io.read();
+        }
+        return model;
+    }
+
+    /**
+     * Build the model outside and, with this method, set it.
+     * @param model The model that has to be used in this library.
+     */
+    public static void setModel(OntModel model) {
+        Config.model = model;
+    }
+    
     
 }
