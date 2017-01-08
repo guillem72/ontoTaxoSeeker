@@ -22,3 +22,6 @@ It is needed:
 
 ## Use
 See the method findPaths in Main.java as an example. It takes a text, process it, and show a list of paths.
+
+##JavaDocs
+[JavaDocs of ontoTaxoSeeker](https://guillem72.github.io/ontoTaxoSeeker/)
