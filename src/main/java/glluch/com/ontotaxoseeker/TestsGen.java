@@ -48,6 +48,21 @@ public class TestsGen {
     public static final String DOC="Two terms: study routing, please, and recursive estimation. "
             + "PKI isn't there, but is a noun too.";
     
+    
+      public void FindPaths_StringResults() throws IOException  {
+        System.out.println("TaxoPath findPaths");
+        String doc = TestsGen.DOC;
+        TaxoPath instance = new TaxoPath();        
+        PathsCount result = instance.findPaths(doc);
+        TermsCount res = result.conceptsCount();
+        File target=new File("resources/test/FindPaths_StringResults.bin");
+        byte[] vs=SerializationUtils.serialize(res);
+        FileUtils.writeByteArrayToFile(target, vs);
+        
+    }
+    
+    
+    
     public static  String save(Object o, String className) throws FileNotFoundException, IOException{
         
        
@@ -88,6 +103,15 @@ public class TestsGen {
         Object o = in.readObject();
        
              return o;
+    }
+    
+    //Doesn't work org.apache.jena.rdf.model.impl.StatementImpl isn't serializable.
+    public void testtestConceptsCountResults() throws IOException{
+        TaxoPath tp=new TaxoPath();
+        PathsCount pc=tp.findPaths(DOC);
+        File target=new File("resources/test/testConceptsCountResults.bin");
+        byte[] vs=SerializationUtils.serialize(pc);
+        FileUtils.writeByteArrayToFile(target, vs);
     }
     
     public void testTermsResults() throws IOException, FileNotFoundException, ClassNotFoundException{

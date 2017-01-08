@@ -28,7 +28,9 @@ import com.glluch.utils.Out;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static java.lang.Math.exp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -50,6 +52,10 @@ public class TermsTest {
      if (ts==null){
          ts=(Terms)TestsGen.load(CLASSFILE);
      }
+    }
+    
+    protected static void resetTs() throws IOException, FileNotFoundException, ClassNotFoundException{
+        ts=(Terms)TestsGen.load(CLASSFILE);
     }
 
     /**
@@ -101,22 +107,28 @@ public class TermsTest {
      * Test of addOne method, of class Terms.
      */
     @Test
-    public void testAddOne2() {
+    public void testAddOne2() throws IOException, FileNotFoundException, ClassNotFoundException {
+        
         System.out.println("Terms.addOne to two");
         Term t = new Term("noun","NN");
         Terms instance = TermsTest.ts;
         //resources/test/Terms2.ser
         int expResult = 2;
         int result = instance.addOne(t);
+        
         assertEquals(expResult, result, 0);
         
     }
     
     /**
      * Test of terms method, of class Terms.
+     * @throws java.io.IOException
+     * @throws java.io.FileNotFoundException
+     * @throws java.lang.ClassNotFoundException
      */
     @Test
-    public void testTerms() throws IOException {
+    public void testTerms() throws IOException, FileNotFoundException, ClassNotFoundException {
+        TermsTest.resetTs();
         System.out.println("Terms.terms");
         Terms instance = TermsTest.ts;        
         File file=new File("resources/test/testTermsResults.bin");
@@ -129,9 +141,13 @@ public class TermsTest {
             Term next = (Term) iter.next();
             lemas.add(next.getLema());
         }
-        Out.p(expResult);
-        Out.p(lemas);
-        Assert.assertArrayEquals(expResult.toArray(), lemas.toArray());
+        Object[] lemas1 = lemas.toArray();
+        Object[] exp = expResult.toArray();
+        java.util.Arrays.sort(lemas1);
+        java.util.Arrays.sort(exp);
+        //Out.p(lemas1);
+        //Out.p(exp);
+        Assert.assertArrayEquals(exp,lemas1);
         
     }
 

@@ -30,12 +30,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A class for save a list of terms and its counts. 
  * @author Guillem LLuch Moll
  */
-public class Terms extends HashMap<Term, Integer> {
+public class Terms extends HashMap<Term, Integer> implements java.io.Serializable {
 
    /**
      * To populated this list, use IEEEtermsCount() 
@@ -104,20 +105,41 @@ public class Terms extends HashMap<Term, Integer> {
         return tc;
     }
 
+    protected Term containsLema(String lema){
+        
+        Iterator iter = this.iterator();
+        while (iter.hasNext()){
+            Term term = (Term) iter.next();
+            if (StringUtils.isNotEmpty(lema) && StringUtils.equals(lema, term.getLema())){
+               return term; 
+            }
+              
+        }
+            
+    return null;
+    }
+    
     /**
      * Add one term to the list.
      * @param t The term to be add to this list.
      * @return the actual count of the param term .
      */
-    public double addOne(Term t) {
+    public int addOne(Term t) {
         int val = 0;
-        if (this.containsKey(t)) {
-            val = this.get(t);
+        String lema=t.getLema();
+        //debug("Terms.addOne, received: "+lema);
+        
+        Term t2=this.containsLema(lema);
+        if (t2!=null) {
+          //  debug("is there");
+            val = this.get(t2);
 
         }
+        else t2=t;
         val = val + 1;
-        this.put(t, val);
-        return this.get(t);
+        this.put(t2, val);
+        //debug(this.pretyPrint());
+        return this.get(t2);
     }
 
     /**
@@ -134,7 +156,18 @@ public class Terms extends HashMap<Term, Integer> {
         return res;
 
     }
-
+    
+    /*
+    public ArrayList<String> lemas(){
+        Iterator iter = this.iterator();
+        ArrayList<String> lemas=new ArrayList<>();
+        while (iter.hasNext()){
+            Term next = (Term) iter.next();
+            lemas.add(next.getLema());
+        }
+        return lemas;
+    }
+    */
     public Iterator iterator() {
         ArrayList<Term> keys = this.terms();
         return keys.iterator();

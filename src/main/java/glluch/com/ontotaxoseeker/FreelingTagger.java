@@ -29,6 +29,8 @@ import com.glluch.utils.Out;
 import java.io.IOException;
 
 import edu.upc.freeling.*;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import org.apache.commons.lang3.StringUtils;
 /**
  * Class to do NLP natural language processing with freeling 4. 
@@ -56,7 +58,13 @@ public class FreelingTagger {
      * @throws IOException Reading files.
      */
     public static Terms nouns(String doc) throws IOException {
-    System.loadLibrary( "freeling_javaAPI" );
+    if (StringUtils.isEmpty(doc)) {
+        Out.p("FreelingTagger, nouns: doc is null");
+            //throw new IllegalArgumentException("The argument cannot be null");
+        Terms ts=new Terms();
+        return ts;
+    }
+        System.loadLibrary( "freeling_javaAPI" );
 
 
     Util.initLocale( "default" );
@@ -77,11 +85,7 @@ public class FreelingTagger {
                      DATA + LANG + "/quantities.dat",
                      DATA + LANG + "/probabilitats.dat");
     } 
-    // Create analyzers.
-
-    // language detector. Used just to show it. Results are printed  but ignored. 
-    // See below.
-    //LangIdent lgid = new LangIdent(DATA + "/common/lang_ident/ident.dat");
+    
 
     if(tk==null){ tk = new Tokenizer( DATA + LANG + "/tokenizer.dat" );}
     if (sp==null) sp = new Splitter( DATA + LANG + "/splitter.dat" );
@@ -102,15 +106,7 @@ public class FreelingTagger {
 
     if (sen==null) sen = new Senses(DATA + LANG + "/senses.dat" ); // sense dictionary
     if (dis==null) dis = new Ukb( DATA + LANG + "/ukb.dat" ); // sense disambiguator
-    
-
- //String line = "S7 verify that purchasing processes respect legal issues including intellectual property rights (IPR).";
-    
-    //String lg = lgid.identifyLanguage(line);
-    //System.out.println( "-------- LANG_IDENT results -----------" );
-    //System.out.println("Language detected (from first line in text): " + lg);
-
-    
+      
       // Extract the tokens from the line of text.
       ListWord l = tk.tokenize( doc );
 
@@ -128,7 +124,12 @@ public class FreelingTagger {
 
       //sen.analyze( ls );
       //dis.analyze( ls );
-      return FreelingTagger.tagOnlyNouns(ls);  
+      Terms tagOnlyNouns = FreelingTagger.tagOnlyNouns(ls);
+      //debug("DOC");
+      //debug(doc);
+      //debug("Result");
+      //debug(tagOnlyNouns.pretyPrint());
+      return tagOnlyNouns;  
     
   }
 
@@ -137,7 +138,7 @@ public class FreelingTagger {
      * @param ls a freeling list of senteces.
      * @return Terms, all the nouns terms in the sentences.
      */ 
-    protected static Terms tagOnlyNouns(ListSentence ls ){
+    protected static Terms tagOnlyNouns(ListSentence ls ) throws IOException{
       Terms terms=new Terms();
        //debug("freelingtager tagOnlyNouns");
        ListSentenceIterator sIt = new ListSentenceIterator(ls);
@@ -156,6 +157,9 @@ public class FreelingTagger {
 
        
       }
+      
+      TestsGen.save(terms);
+      
       return terms;
       
   } 

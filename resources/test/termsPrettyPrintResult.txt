@@ -1,0 +1,5 @@
+pki -> 1
+estimation -> 1
+noun -> 1
+study -> 1
+term -> 1

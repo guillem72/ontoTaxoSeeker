@@ -34,7 +34,7 @@ import org.apache.jena.rdf.model.Statement;
  * org.apache.jena.ontology.OntTools.Path</a>.
  * @author Guillem LLuch Moll
  */
-public class Path extends org.apache.jena.ontology.OntTools.Path {
+public class Path extends org.apache.jena.ontology.OntTools.Path implements java.io.Serializable {
 
     /**
      * Creates a friendly representation of the path.

@@ -34,7 +34,7 @@ import java.util.Set;
  * A wrapper for Map path -&lt; int. 
  * @author Guillem LLuch Moll
  */
-public class PathsCount extends HashMap<Path,Integer>{
+public class PathsCount extends HashMap<Path,Integer> implements java.io.Serializable{
 
     /**
      * This method transform this object to a TermsCount.
@@ -45,10 +45,15 @@ public class PathsCount extends HashMap<Path,Integer>{
          TermsCount cc=new TermsCount();
          while (ite.hasNext()){
              Path p=(Path) ite.next();
+             if (p!=null)
              cc.put(p.prettyPrint(), this.get(p));
          }
          return cc;
      }
+    
+    public String prettyPrint(){
+    return this.conceptsCount().pretyPrint();
+    }
     
     /**
      * Method for obtain the keys of this object.

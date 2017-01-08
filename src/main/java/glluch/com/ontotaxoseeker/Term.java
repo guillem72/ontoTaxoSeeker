@@ -24,8 +24,12 @@
 package glluch.com.ontotaxoseeker;
 
 import com.glluch.utils.Out;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.upc.freeling.*;
+import java.io.File;
 import java.io.IOException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.Individual;
 
@@ -33,7 +37,7 @@ import org.apache.jena.ontology.Individual;
  * A class for store word, lemma and its related information.
  * @author Guillem LLuch Moll
  */
-public class Term {
+public class Term implements java.io.Serializable {
 
     protected String lema;
     protected String posTag;
@@ -43,22 +47,41 @@ public class Term {
     /**
      * Constructor form freeling word.
      * @param w Freeling word.
+     * @throws java.io.IOException
      */
-    public Term(Word w) {
+    public Term(Word w) throws IOException  {
         this.lema = w.getLemma();
         this.posTag = w.getTag();
         this.uri = Term.buildUri(lema);
+        boolean isIEEE = this.isEEEterm();
+        //For debug
+        //GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        //Gson gson = builder.create();
+        //String tpj = gson.toJson(this);
+        //FileUtils.writeStringToFile(new File("resources/test/"+this.lema+".json"), tpj);
+        //For debug2
+        //GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        //Gson gson = builder.create();
+        //String tpj = gson.toJson(w);
+        //FileUtils.writeStringToFile(new File("resources/test/"+this.lema+"FreeLing.json"), tpj);
     }
 
+    public Term(String lemma, String tag){
+        this.lema = lemma;
+        this.posTag = tag;
+        this.uri = Term.buildUri(lema);
+    }
     /**
      * Test if the term is present in the IEEE computers taxonomy
      * @return true if the term is there, false otherwise.
      * @throws IOException Reading file.
      */
     public boolean isEEEterm() throws IOException {
-        if (!this.isIEEETerm) {
-            return false;
+        //debug("isEEEterm "+this.uri+" "+this.isIEEETerm);
+        if (this.isIEEETerm) {
+            return true;
         }
+        //debug("check IEEE");
         Individual ind = Config.getModel().getIndividual(this.uri);
         this.isIEEETerm=(ind != null);
         return this.isIEEETerm;
@@ -70,6 +93,7 @@ public class Term {
      * @return a String with the candidate uri.
      */
     public static String buildUri(String term) {
+        //TODO check if term is, perhaps, an uri.
         String res;
         res = term.trim().toLowerCase();
         res = StringUtils.replace(res, " ", "_");

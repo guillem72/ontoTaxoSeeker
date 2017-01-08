@@ -46,7 +46,7 @@ public class Main {
      //http://glluch.com/ieee_taxonomy#narrowed
      //http://glluch.com/ieee_taxonomy#level
      //http://www.w3.org/2000/01/rdf-schema#label
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
         //String filename="resources/ieee_onto2_reasoning.rdf"; ieee_onto2_reasoning.owl
         //String filename="resources/ieee_onto2_reasoning.rdf";
         //String filename="resources/ieee_taxo_v2_rdf.owl";
@@ -73,11 +73,24 @@ public class Main {
             + "reconfiguration of existing components. Optimises efficiency, "
             + "cost and quality. Validates results with user representatives, "
             + "integrates and commissions the overall solution.Debugging";
-         findPaths(doc);
-        
+        doc="Two terms: study routing, please, and recursive estimation. "
+            + "PKI isn't there, but is a noun too.";
+         //findPaths(doc);
+        //testResults() ;
     }
     
-      public static void findPaths(String doc) throws IOException{
+    protected static void testResults() throws IOException, FileNotFoundException, ClassNotFoundException{
+    TestsGen trg=new TestsGen();
+    //trg.termsPrettyPrintResult();
+    //trg.testToTermsCountResults();
+    //trg.testAddOneResults();
+    //trg.testTermsResults();
+    //trg.testtestConceptsCountResults();
+    //trg.FindPaths_StringResults();
+    
+    }
+    
+      protected static void findPaths(String doc) throws IOException{
          Config.getModel();
         TaxoPath p=new TaxoPath();
         

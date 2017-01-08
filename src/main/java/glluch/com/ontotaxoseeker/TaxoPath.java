@@ -25,7 +25,9 @@ package glluch.com.ontotaxoseeker;
 
 import com.glluch.findterms.TermsCount;
 import com.glluch.utils.Out;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,13 @@ public class TaxoPath {
     public  PathsCount findPaths(String doc) throws IOException{
        
          TermsCount nouns=this.nouns(doc);
+         //Generate tests results for paths count
+         //FileOutputStream fileOut =  new FileOutputStream("resources/test/termsCount.ser");
+         //ObjectOutputStream out = new ObjectOutputStream(fileOut);
+         //out.writeObject(nouns);
+         //out.close();
+         //fileOut.close();
+         //System.out.printf("Serialized data is saved in resources/test/termsCount.ser");
         return this.findPaths(nouns);
     }
      
@@ -69,6 +78,7 @@ public class TaxoPath {
         Terms terms = FreelingTagger.nouns(doc);
         //debug("terms");
         //debug(terms.pretyPrint());
+        
         nouns = terms.toTermsCount();
         //debug("nouns");
         //debug(nouns.pretyPrint());
@@ -83,7 +93,7 @@ public class TaxoPath {
      * @return A list of paths from the taxonomy and its counts.
      * @throws IOException Reading a file in freeling.
      */
-    public PathsCount findPaths(TermsCount terms) throws IOException {
+    protected PathsCount findPaths(TermsCount terms) throws IOException {
         PathsCount termsPaths = new PathsCount();
         Iterator termsIte=terms.iterator();
         //debug("PathsCount findPaths");
